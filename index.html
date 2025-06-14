@@ -14,8 +14,9 @@
         <div id="home-screen" class="screen active">
             <h1>Lista de Compras</h1>
             <div class="search-container">
-                <input type="text" id="category-search" placeholder="Buscar categorias...">
+                <input type="text" id="category-search" placeholder="Buscar itens...">
             </div>
+            <div id="search-results-container" class="search-results-container"></div>
             <div id="categories-grid" class="grid-container"></div>
         </div>
 
@@ -29,6 +30,10 @@
                 <input type="text" id="item-search" placeholder="Buscar itens...">
             </div>
             <div id="items-list"></div>
+            <div class="add-item-container">
+                <input type="text" id="custom-item-input" placeholder="Adicionar item personalizado">
+                <button id="add-custom-item">+</button>
+            </div>
             <button id="finalize-button" class="floating-button">Finalizar Lista</button>
         </div>
 
@@ -39,12 +44,14 @@
                 <h2>Lista Final</h2>
             </div>
             <div id="final-list-container"></div>
+            <div class="add-item-container">
+                <input type="text" id="final-custom-item" placeholder="Adicionar item extra">
+                <button id="add-final-item">+</button>
+            </div>
             <button id="generate-pdf" class="floating-button">Gerar PDF</button>
         </div>
     </div>
 
-    <script src="data/categories.js"></script>
-    <script src="data/items.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

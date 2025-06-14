@@ -1,12 +1,220 @@
-// Dados (seriam importados dos arquivos categories.js e items.js)
-// const categories = [...];
-// const items = [...];
+// Dados
+const categories = [
+    {
+        id: 1,
+        name: 'Limpeza (lavanderia)',
+        color: '#00BCD4',
+        icon: '🧼'
+    },
+    {
+        id: 2,
+        name: 'Dispensa',
+        color: '#8D6E63',
+        icon: '🥫'
+    },
+    {
+        id: 3,
+        name: 'Armário alto',
+        color: '#795548',
+        icon: '🧂'
+    },
+    {
+        id: 4,
+        name: 'Armário baixo',
+        color: '#A1887F',
+        icon: '🍝'
+    },
+    {
+        id: 5,
+        name: 'Congelador',
+        color: '#03A9F4',
+        icon: '❄️'
+    },
+    {
+        id: 6,
+        name: 'Geladeira',
+        color: '#4FC3F7',
+        icon: '🧊'
+    },
+    {
+        id: 7,
+        name: 'Frutas, Legumes e verduras',
+        color: '#4CAF50',
+        icon: '🥦'
+    },
+    {
+        id: 8,
+        name: 'Base da cozinha',
+        color: '#CDDC39',
+        icon: '🧄'
+    },
+    {
+        id: 9,
+        name: 'Sobremesas',
+        color: '#9C27B0',
+        icon: '🍫'
+    },
+    {
+        id: 10,
+        name: 'Banheiro',
+        color: '#E91E63',
+        icon: '🚽'
+    },
+    {
+        id: 11,
+        name: 'Ração',
+        color: '#673AB7',
+        icon: '🐕'
+    }
+];
+
+const items = [
+    // Limpeza (lavanderia) - ID 1
+    { id: 101, name: 'Sabão em pó', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
+    { id: 102, name: 'Amaciante', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
+    { id: 103, name: 'Água sanitária', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
+    { id: 104, name: 'Desengordurante', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
+    { id: 105, name: 'Multiuso', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
+    { id: 106, name: 'Lustra móveis', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
+    { id: 107, name: 'Desinfetante', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
+    { id: 108, name: 'Detergente', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
+    { id: 109, name: 'Bombril', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
+    { id: 110, name: 'Bucha', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
+    { id: 111, name: 'Saco de lixo', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
+    { id: 112, name: 'Limpa vidros', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
+    { id: 113, name: 'Álcool', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
+    { id: 114, name: 'Sabonete líquido', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
+
+    // Dispensa - ID 2
+    { id: 201, name: 'Leite', categoryId: 2, categoryName: 'Dispensa' },
+    { id: 202, name: 'Refrigerante', categoryId: 2, categoryName: 'Dispensa' },
+    { id: 203, name: 'Gatorade', categoryId: 2, categoryName: 'Dispensa' },
+
+    // Armário alto - ID 3
+    { id: 301, name: 'Arroz', categoryId: 3, categoryName: 'Armário alto' },
+    { id: 302, name: 'Feijão', categoryId: 3, categoryName: 'Armário alto' },
+    { id: 303, name: 'Açúcar', categoryId: 3, categoryName: 'Armário alto' },
+    { id: 304, name: 'Sázon carnes', categoryId: 3, categoryName: 'Armário alto' },
+    { id: 305, name: 'Sázon arroz', categoryId: 3, categoryName: 'Armário alto' },
+    { id: 306, name: 'Sázon feijão', categoryId: 3, categoryName: 'Armário alto' },
+    { id: 307, name: 'Sázon salada', categoryId: 3, categoryName: 'Armário alto' },
+    { id: 308, name: 'Açafrão', categoryId: 3, categoryName: 'Armário alto' },
+    { id: 309, name: 'Orégano', categoryId: 3, categoryName: 'Armário alto' },
+    { id: 310, name: 'Pimenta do reino', categoryId: 3, categoryName: 'Armário alto' },
+    { id: 311, name: 'Colorau', categoryId: 3, categoryName: 'Armário alto' },
+    { id: 312, name: 'Páprica', categoryId: 3, categoryName: 'Armário alto' },
+    { id: 313, name: 'Páprica doce', categoryId: 3, categoryName: 'Armário alto' },
+    { id: 314, name: 'Chimichurri', categoryId: 3, categoryName: 'Armário alto' },
+    { id: 315, name: 'Palito de dente', categoryId: 3, categoryName: 'Armário alto' },
+
+    // Armário baixo - ID 4
+    { id: 401, name: 'Miojo', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 402, name: 'Farinha de trigo', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 403, name: 'Toddy', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 404, name: 'Café', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 405, name: 'Salgadinho', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 406, name: 'Sucrilhos', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 407, name: 'Creme de leite', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 408, name: 'Molho de tomate', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 409, name: 'Milho', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 410, name: 'Milho de pipoca', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 411, name: 'Feijoada', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 412, name: 'Macarrão', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 413, name: 'Suco de caixinha', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 414, name: 'Tapioca', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 415, name: 'Sardinha', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 416, name: 'Bolacha Doce', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 417, name: 'Bolacha Salgada', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 418, name: 'Leite condensado', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 419, name: 'Farofa', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 420, name: 'Batata Palha', categoryId: 4, categoryName: 'Armário baixo' },
+    { id: 421, name: 'Filtro de café', categoryId: 4, categoryName: 'Armário baixo' },
+
+    // Congelador - ID 5
+    { id: 501, name: 'Carne', categoryId: 5, categoryName: 'Congelador' },
+    { id: 502, name: 'Carne moída', categoryId: 5, categoryName: 'Congelador' },
+    { id: 503, name: 'Peixe', categoryId: 5, categoryName: 'Congelador' },
+    { id: 504, name: 'Frango', categoryId: 5, categoryName: 'Congelador' },
+    { id: 505, name: 'Lanche micro-ondas', categoryId: 5, categoryName: 'Congelador' },
+    { id: 506, name: 'Pizza micro-ondas', categoryId: 5, categoryName: 'Congelador' },
+    { id: 507, name: 'Hambúrguer', categoryId: 5, categoryName: 'Congelador' },
+    { id: 508, name: 'Salsicha', categoryId: 5, categoryName: 'Congelador' },
+    { id: 509, name: 'Linguiça', categoryId: 5, categoryName: 'Congelador' },
+    { id: 510, name: 'Calabresa', categoryId: 5, categoryName: 'Congelador' },
+    { id: 511, name: 'Bacon', categoryId: 5, categoryName: 'Congelador' },
+    { id: 512, name: 'Batata frita', categoryId: 5, categoryName: 'Congelador' },
+    { id: 513, name: 'Batata com carinha', categoryId: 5, categoryName: 'Congelador' },
+
+    // Geladeira - ID 6
+    { id: 601, name: 'Yakult', categoryId: 6, categoryName: 'Geladeira' },
+    { id: 602, name: 'Danone', categoryId: 6, categoryName: 'Geladeira' },
+    { id: 603, name: 'Queijo', categoryId: 6, categoryName: 'Geladeira' },
+    { id: 604, name: 'Presunto', categoryId: 6, categoryName: 'Geladeira' },
+    { id: 605, name: 'Mortadela', categoryId: 6, categoryName: 'Geladeira' },
+    { id: 606, name: 'Ovo', categoryId: 6, categoryName: 'Geladeira' },
+    { id: 607, name: 'Ketchup', categoryId: 6, categoryName: 'Geladeira' },
+    { id: 608, name: 'Suco natural de uva', categoryId: 6, categoryName: 'Geladeira' },
+    { id: 609, name: 'Suco natural de laranja', categoryId: 6, categoryName: 'Geladeira' },
+    { id: 610, name: 'Banha', categoryId: 6, categoryName: 'Geladeira' },
+    { id: 611, name: 'Manteiga', categoryId: 6, categoryName: 'Geladeira' },
+    { id: 612, name: 'Requeijão', categoryId: 6, categoryName: 'Geladeira' },
+    { id: 613, name: 'Mostarda', categoryId: 6, categoryName: 'Geladeira' },
+
+    // Frutas, Legumes e verduras - ID 7
+    { id: 701, name: 'Maçã', categoryId: 7, categoryName: 'Frutas, Legumes e verduras' },
+    { id: 702, name: 'Banana', categoryId: 7, categoryName: 'Frutas, Legumes e verduras' },
+    { id: 703, name: 'Melancia', categoryId: 7, categoryName: 'Frutas, Legumes e verduras' },
+    { id: 704, name: 'Batata', categoryId: 7, categoryName: 'Frutas, Legumes e verduras' },
+    { id: 705, name: 'Limão', categoryId: 7, categoryName: 'Frutas, Legumes e verduras' },
+    { id: 706, name: 'Uva verde', categoryId: 7, categoryName: 'Frutas, Legumes e verduras' },
+    { id: 707, name: 'Mexerica', categoryId: 7, categoryName: 'Frutas, Legumes e verduras' },
+    { id: 708, name: 'Laranja', categoryId: 7, categoryName: 'Frutas, Legumes e verduras' },
+    { id: 709, name: 'Pimentão', categoryId: 7, categoryName: 'Frutas, Legumes e verduras' },
+    { id: 710, name: 'Alface', categoryId: 7, categoryName: 'Frutas, Legumes e verduras' },
+    { id: 711, name: 'Tomate', categoryId: 7, categoryName: 'Frutas, Legumes e verduras' },
+    { id: 712, name: 'Batata doce', categoryId: 7, categoryName: 'Frutas, Legumes e verduras' },
+
+    // Base da cozinha - ID 8
+    { id: 801, name: 'Óleo', categoryId: 8, categoryName: 'Base da cozinha' },
+    { id: 802, name: 'Sal', categoryId: 8, categoryName: 'Base da cozinha' },
+    { id: 803, name: 'Alho', categoryId: 8, categoryName: 'Base da cozinha' },
+    { id: 804, name: 'Cebola', categoryId: 8, categoryName: 'Base da cozinha' },
+    { id: 805, name: 'Alho e sal', categoryId: 8, categoryName: 'Base da cozinha' },
+    { id: 806, name: 'Azeite', categoryId: 8, categoryName: 'Base da cozinha' },
+    { id: 807, name: 'Vinagre', categoryId: 8, categoryName: 'Base da cozinha' },
+
+    // Sobremesas - ID 9
+    { id: 901, name: 'Chocolate', categoryId: 9, categoryName: 'Sobremesas' },
+    { id: 902, name: 'Bis', categoryId: 9, categoryName: 'Sobremesas' },
+    { id: 903, name: 'Nutella', categoryId: 9, categoryName: 'Sobremesas' },
+    { id: 904, name: 'Bala', categoryId: 9, categoryName: 'Sobremesas' },
+    { id: 905, name: 'Paçoca', categoryId: 9, categoryName: 'Sobremesas' },
+
+    // Banheiro - ID 10
+    { id: 1001, name: 'Papel Higiênico', categoryId: 10, categoryName: 'Banheiro' },
+    { id: 1002, name: 'Sabonete', categoryId: 10, categoryName: 'Banheiro' },
+    { id: 1003, name: 'Cotonete', categoryId: 10, categoryName: 'Banheiro' },
+    { id: 1004, name: 'Pasta adulto', categoryId: 10, categoryName: 'Banheiro' },
+    { id: 1005, name: 'Pasta criança', categoryId: 10, categoryName: 'Banheiro' },
+    { id: 1006, name: 'Escova de dente', categoryId: 10, categoryName: 'Banheiro' },
+    { id: 1007, name: 'Xampu adulto', categoryId: 10, categoryName: 'Banheiro' },
+    { id: 1008, name: 'Condicionador adulto', categoryId: 10, categoryName: 'Banheiro' },
+    { id: 1009, name: 'Xampu anticaspa', categoryId: 10, categoryName: 'Banheiro' },
+    { id: 1010, name: 'Xampu criança', categoryId: 10, categoryName: 'Banheiro' },
+    { id: 1011, name: 'Condicionador criança', categoryId: 10, categoryName: 'Banheiro' },
+    { id: 1012, name: 'Enxaguante bucal', categoryId: 10, categoryName: 'Banheiro' },
+
+    // Ração - ID 11
+    { id: 1101, name: 'Ração Marley', categoryId: 11, categoryName: 'Ração' }
+];
 
 // Estado global
 let state = {
     selectedCategory: null,
     selectedItems: {},
-    searchTerm: ''
+    customItems: [],
+    searchTerm: '',
+    showSearchResults: false
 };
 
 // Elementos DOM
@@ -23,7 +231,12 @@ const elements = {
     backButton: document.getElementById('back-button'),
     backFinalButton: document.getElementById('back-final-button'),
     finalizeButton: document.getElementById('finalize-button'),
-    generatePdf: document.getElementById('generate-pdf')
+    generatePdf: document.getElementById('generate-pdf'),
+    customItemInput: document.getElementById('custom-item-input'),
+    addCustomItem: document.getElementById('add-custom-item'),
+    finalCustomItem: document.getElementById('final-custom-item'),
+    addFinalItem: document.getElementById('add-final-item'),
+    searchResultsContainer: document.getElementById('search-results-container')
 };
 
 // Inicialização
@@ -47,42 +260,128 @@ function setupEventListeners() {
 
     // Buscas
     elements.categorySearch.addEventListener('input', (e) => {
-        state.searchTerm = e.target.value;
-        renderCategories();
+        state.searchTerm = e.target.value.trim().toLowerCase();
+        
+        if (state.searchTerm === '') {
+            state.showSearchResults = false;
+            renderCategories();
+        } else {
+            state.showSearchResults = true;
+            showGlobalItemSearch();
+        }
     });
 
     elements.itemSearch.addEventListener('input', (e) => {
         state.searchTerm = e.target.value;
         renderItems();
     });
+
+    // Adicionar itens personalizados
+    elements.addCustomItem.addEventListener('click', addCustomItem);
+    elements.customItemInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addCustomItem();
+    });
+
+    elements.addFinalItem.addEventListener('click', addFinalCustomItem);
+    elements.finalCustomItem.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addFinalCustomItem();
+    });
 }
 
-// Renderização
 function renderCategories() {
     elements.categoriesGrid.innerHTML = '';
+    elements.searchResultsContainer.style.display = 'none';
+    elements.categoriesGrid.style.display = 'grid';
     
-    const filtered = categories.filter(cat => 
-        cat.name.toLowerCase().includes(state.searchTerm.toLowerCase())
-    );
-
-    filtered.forEach(category => {
+    categories.forEach(category => {
         const card = document.createElement('div');
         card.className = 'category-card';
+        card.style.setProperty('--category-color', category.color);
         card.innerHTML = `
+            <span class="category-icon">${category.icon}</span>
             <h3>${category.name}</h3>
         `;
+        
         card.addEventListener('click', () => {
             state.selectedCategory = category;
-            switchScreen('category');
             elements.categoryTitle.textContent = category.name;
+            state.searchTerm = '';
+            elements.itemSearch.value = '';
             renderItems();
+            switchScreen('category');
         });
+        
         elements.categoriesGrid.appendChild(card);
+    });
+}
+
+function switchScreen(screen) {
+    document.querySelectorAll('.screen').forEach(s => {
+        s.classList.remove('active');
+    });
+    
+    switch(screen) {
+        case 'home':
+            elements.homeScreen.classList.add('active');
+            renderCategories();
+            break;
+        case 'category':
+            elements.categoryScreen.classList.add('active');
+            break;
+        case 'final':
+            elements.finalScreen.classList.add('active');
+            renderFinalList();
+            break;
+    }
+}
+
+function showGlobalItemSearch() {
+    elements.categoriesGrid.style.display = 'none';
+    elements.searchResultsContainer.style.display = 'block';
+    elements.searchResultsContainer.innerHTML = '<h3>Resultados da Busca</h3>';
+    
+    if (state.searchTerm === '') {
+        elements.searchResultsContainer.innerHTML += '<p>Digite para buscar itens</p>';
+        return;
+    }
+    
+    const allItems = [...items, ...state.customItems];
+    const filteredItems = allItems.filter(item => 
+        item.name.toLowerCase().includes(state.searchTerm)
+    );
+    
+    if (filteredItems.length === 0) {
+        elements.searchResultsContainer.innerHTML += '<p>Nenhum item encontrado</p>';
+        return;
+    }
+    
+    filteredItems.forEach(item => {
+        const category = categories.find(c => c.id === item.categoryId) || {};
+        const itemElement = document.createElement('div');
+        itemElement.className = 'search-result-item';
+        itemElement.innerHTML = `
+            <div>${item.name}</div>
+            <div class="category-name">${category.name || 'Sem categoria'}</div>
+        `;
+        itemElement.addEventListener('click', () => {
+            if (item.categoryId) {
+                state.selectedCategory = category;
+                switchScreen('category');
+                elements.categoryTitle.textContent = category.name;
+                elements.itemSearch.value = state.searchTerm;
+                state.searchTerm = '';
+                elements.categorySearch.value = '';
+                renderItems();
+            }
+        });
+        elements.searchResultsContainer.appendChild(itemElement);
     });
 }
 
 function renderItems() {
     elements.itemsList.innerHTML = '';
+    
+    if (!state.selectedCategory) return;
     
     const filtered = items.filter(item => 
         item.categoryId === state.selectedCategory.id &&
@@ -90,61 +389,116 @@ function renderItems() {
     );
 
     filtered.forEach(item => {
-        const itemCard = document.createElement('div');
-        itemCard.className = 'item-card';
-        
-        const quantity = state.selectedItems[item.id] || 0;
-        
-        itemCard.innerHTML = `
-            <span>${item.name}</span>
-            <div class="quantity-controls">
-                <button class="decrease">-</button>
-                <span>${quantity}</span>
-                <button class="increase">+</button>
-            </div>
-        `;
-        
-        const increaseBtn = itemCard.querySelector('.increase');
-        const decreaseBtn = itemCard.querySelector('.decrease');
-        
-        increaseBtn.addEventListener('click', () => updateQuantity(item.id, quantity + 1));
-        decreaseBtn.addEventListener('click', () => updateQuantity(item.id, Math.max(0, quantity - 1)));
-        
-        elements.itemsList.appendChild(itemCard);
+        createItemCard(item);
     });
+
+    state.customItems
+        .filter(item => item.categoryId === state.selectedCategory.id)
+        .forEach(item => {
+            createItemCard(item, true);
+        });
+}
+
+function createItemCard(item, isCustom = false) {
+    const itemCard = document.createElement('div');
+    itemCard.className = `item-card ${isCustom ? 'custom-item' : ''}`;
+    
+    const quantity = state.selectedItems[item.id] || 0;
+    
+    itemCard.innerHTML = `
+        <span>${item.name}</span>
+        <div class="quantity-controls">
+            <button class="decrease">-</button>
+            <span>${quantity}</span>
+            <button class="increase">+</button>
+        </div>
+    `;
+    
+    const increaseBtn = itemCard.querySelector('.increase');
+    const decreaseBtn = itemCard.querySelector('.decrease');
+    
+    increaseBtn.addEventListener('click', () => updateQuantity(item.id, quantity + 1));
+    decreaseBtn.addEventListener('click', () => updateQuantity(item.id, Math.max(0, quantity - 1)));
+    
+    elements.itemsList.appendChild(itemCard);
+}
+
+function updateQuantity(itemId, quantity) {
+    state.selectedItems = {
+        ...state.selectedItems,
+        [itemId]: quantity
+    };
+    renderItems();
+}
+
+function addCustomItem() {
+    const itemName = elements.customItemInput.value.trim();
+    if (!itemName) return;
+    
+    const newItem = {
+        id: `custom-${Date.now()}`,
+        name: itemName,
+        categoryId: state.selectedCategory.id,
+        categoryName: state.selectedCategory.name
+    };
+    
+    state.customItems.push(newItem);
+    state.selectedItems[newItem.id] = 1;
+    
+    elements.customItemInput.value = '';
+    renderItems();
+}
+
+function finalizeList() {
+    switchScreen('final');
 }
 
 function renderFinalList() {
     elements.finalListContainer.innerHTML = '';
     
-    // Agrupar itens por categoria
-    const grouped = Object.keys(state.selectedItems)
+    const grouped = {};
+    
+    Object.keys(state.selectedItems)
         .filter(id => state.selectedItems[id] > 0)
-        .reduce((acc, id) => {
-            const item = items.find(i => i.id.toString() === id);
-            if (!acc[item.categoryId]) {
-                acc[item.categoryId] = {
-                    category: categories.find(c => c.id === item.categoryId),
+        .forEach(id => {
+            const item = [...items, ...state.customItems].find(i => i.id.toString() === id);
+            if (!item) return;
+            
+            const categoryId = item.categoryId || 'extra';
+            
+            if (!grouped[categoryId]) {
+                grouped[categoryId] = {
+                    category: categories.find(c => c.id === item.categoryId) || { 
+                        id: 'extra', 
+                        name: 'Itens Extras', 
+                        color: '#9E9E9E' 
+                    },
                     items: []
                 };
             }
-            acc[item.categoryId].items.push({
+            grouped[categoryId].items.push({
                 ...item,
                 quantity: state.selectedItems[id]
             });
-            return acc;
-        }, {});
+        });
     
-    // Renderizar
-    for (const categoryId in grouped) {
+    const sortedCategories = Object.keys(grouped).sort((a, b) => {
+        if (a === 'extra') return 1;
+        if (b === 'extra') return -1;
+        return 0;
+    });
+    
+    sortedCategories.forEach(categoryId => {
         const group = grouped[categoryId];
         const section = document.createElement('div');
         section.className = 'category-section';
+        section.style.setProperty('--category-color', group.category.color);
         
         let itemsHTML = '';
         group.items.forEach(item => {
+            const isCustom = state.customItems.some(ci => ci.id === item.id);
             itemsHTML += `
-                <div class="item-row">
+                <div class="item-row ${isCustom ? 'custom-item' : ''}">
                     <span>${item.name}</span>
                     <span>x ${item.quantity}</span>
                 </div>
@@ -157,100 +511,101 @@ function renderFinalList() {
         `;
         
         elements.finalListContainer.appendChild(section);
-    }
+    });
 }
 
-// Lógica
-function updateQuantity(itemId, quantity) {
-    state.selectedItems = {
-        ...state.selectedItems,
-        [itemId]: quantity
-    };
-    renderItems();
-}
-
-function finalizeList() {
-    renderFinalList();
-    switchScreen('final');
-}
-
-function switchScreen(screen) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+function addFinalCustomItem() {
+    const itemName = elements.finalCustomItem.value.trim();
+    if (!itemName) return;
     
-    switch(screen) {
-        case 'home':
-            state.searchTerm = '';
-            elements.categorySearch.value = '';
-            elements.homeScreen.classList.add('active');
-            break;
-        case 'category':
-            state.searchTerm = '';
-            elements.itemSearch.value = '';
-            elements.categoryScreen.classList.add('active');
-            break;
-        case 'final':
-            elements.finalScreen.classList.add('active');
-            break;
-    }
+    const newItem = {
+        id: `extra-${Date.now()}`,
+        name: itemName,
+        categoryId: 'extra'
+    };
+    
+    state.customItems.push(newItem);
+    state.selectedItems[newItem.id] = 1;
+    elements.finalCustomItem.value = '';
+    renderFinalList();
 }
 
 function generatePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
-    // Título
+    // Título do PDF
     doc.setFontSize(20);
     doc.text('Lista de Compras', 105, 15, { align: 'center' });
     
-    // Conteúdo
-    let y = 30;
-    const grouped = {};
+    // Adicionar data
+    const today = new Date();
+    const dateStr = today.toLocaleDateString('pt-BR');
+    doc.setFontSize(12);
+    doc.text(`Data: ${dateStr}`, 105, 25, { align: 'center' });
     
-    // Agrupar itens (mesma lógica do renderFinalList)
+    let yPosition = 35;
+    
+    // Agrupar itens por categoria
+    const grouped = {};
     Object.keys(state.selectedItems)
         .filter(id => state.selectedItems[id] > 0)
         .forEach(id => {
-            const item = items.find(i => i.id.toString() === id);
-            if (!grouped[item.categoryId]) {
-                grouped[item.categoryId] = {
-                    category: categories.find(c => c.id === item.categoryId),
+            const item = [...items, ...state.customItems].find(i => i.id.toString() === id);
+            if (!item) return;
+            
+            const categoryId = item.categoryId || 'extra';
+            
+            if (!grouped[categoryId]) {
+                grouped[categoryId] = {
+                    category: categories.find(c => c.id === item.categoryId) || { 
+                        id: 'extra', 
+                        name: 'Itens Extras', 
+                        color: '#9E9E9E' 
+                    },
                     items: []
                 };
             }
-            grouped[item.categoryId].items.push({
+            grouped[categoryId].items.push({
                 ...item,
                 quantity: state.selectedItems[id]
             });
         });
     
-    // Adicionar ao PDF
-    for (const categoryId in grouped) {
+    // Adicionar conteúdo ao PDF
+    Object.keys(grouped).forEach(categoryId => {
         const group = grouped[categoryId];
         
-        // Categoria
+        // Adicionar título da categoria
         doc.setFontSize(14);
-        doc.setTextColor(0, 100, 0);
-        doc.text(group.category.name, 14, y);
-        y += 10;
+        doc.setTextColor(50, 50, 50);
+        doc.text(group.category.name, 14, yPosition);
+        yPosition += 8;
         
-        // Itens
+        // Adicionar itens
         doc.setFontSize(12);
-        doc.setTextColor(0, 0, 0);
-        
         group.items.forEach(item => {
-            doc.text(`- ${item.name}`, 20, y);
-            doc.text(`x ${item.quantity}`, 180, y);
-            y += 7;
+            const isCustom = state.customItems.some(ci => ci.id === item.id);
+            
+            if (isCustom) {
+                doc.setTextColor(150, 150, 0); // Cor diferente para itens personalizados
+            } else {
+                doc.setTextColor(0, 0, 0);
+            }
+            
+            doc.text(`• ${item.name} (x${item.quantity})`, 20, yPosition);
+            yPosition += 7;
+            
+            // Verificar se precisa de nova página
+            if (yPosition > 280) {
+                doc.addPage();
+                yPosition = 20;
+            }
         });
         
-        y += 10;
-    }
+        yPosition += 5; // Espaço entre categorias
+    });
     
-    // Rodapé
-    doc.setFontSize(10);
-    doc.setTextColor(100, 100, 100);
-    doc.text(`Gerado em ${new Date().toLocaleDateString()}`, 105, 280, { align: 'center' });
-    
-    // Salvar
-    doc.save('lista_de_compras.pdf');
+    // Salvar o PDF
+    doc.save(`lista_de_compras_${dateStr.replace(/\//g, '-')}.pdf`);
 }
