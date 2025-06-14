@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Compras Inteligente</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Tela Inicial -->
+        <div id="home-screen" class="screen active">
+            <h1>Lista de Compras</h1>
+            <div class="search-container">
+                <input type="text" id="category-search" placeholder="Buscar categorias...">
+            </div>
+            <div id="categories-grid" class="grid-container"></div>
+        </div>
+
+        <!-- Tela de Itens por Categoria -->
+        <div id="category-screen" class="screen">
+            <div class="screen-header">
+                <button id="back-button" class="back-button">←</button>
+                <h2 id="category-title"></h2>
+            </div>
+            <div class="search-container">
+                <input type="text" id="item-search" placeholder="Buscar itens...">
+            </div>
+            <div id="items-list"></div>
+            <button id="finalize-button" class="floating-button">Finalizar Lista</button>
+        </div>
+
+        <!-- Tela Final com PDF -->
+        <div id="final-screen" class="screen">
+            <div class="screen-header">
+                <button id="back-final-button" class="back-button">←</button>
+                <h2>Lista Final</h2>
+            </div>
+            <div id="final-list-container"></div>
+            <button id="generate-pdf" class="floating-button">Gerar PDF</button>
+        </div>
+    </div>
+
+    <script src="data/categories.js"></script>
+    <script src="data/items.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
