@@ -256,7 +256,11 @@ function setupEventListeners() {
     });
 
     elements.finalizeButton.addEventListener('click', finalizeList);
-    elements.generatePdf.addEventListener('click', generatePDF);
+    
+    // Evento do botão Gerar PDF corrigido
+    elements.generatePdf.addEventListener('click', () => {
+        generatePDF();
+    });
 
     // Buscas
     elements.categorySearch.addEventListener('input', (e) => {
@@ -531,81 +535,186 @@ function addFinalCustomItem() {
 }
 
 function generatePDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    
-    // Título do PDF
-    doc.setFontSize(20);
-    doc.text('Lista de Compras', 105, 15, { align: 'center' });
-    
-    // Adicionar data
-    const today = new Date();
-    const dateStr = today.toLocaleDateString('pt-BR');
-    doc.setFontSize(12);
-    doc.text(`Data: ${dateStr}`, 105, 25, { align: 'center' });
-    
-    let yPosition = 35;
-    
-    // Agrupar itens por categoria
-    const grouped = {};
-    Object.keys(state.selectedItems)
-        .filter(id => state.selectedItems[id] > 0)
-        .forEach(id => {
-            const item = [...items, ...state.customItems].find(i => i.id.toString() === id);
-            if (!item) return;
-            
-            const categoryId = item.categoryId || 'extra';
-            
-            if (!grouped[categoryId]) {
-                grouped[categoryId] = {
-                    category: categories.find(c => c.id === item.categoryId) || { 
-                        id: 'extra', 
-                        name: 'Itens Extras', 
-                        color: '#9E9E9E' 
-                    },
-                    items: []
-                };
-            }
-            grouped[categoryId].items.push({
-                ...item,
-                quantity: state.selectedItems[id]
-            });
+    try {
+        if (typeof window.jspdf === 'undefined') {
+            alert('A biblioteca jsPDF não foi carregada corretamente.');
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4'
         });
-    
-    // Adicionar conteúdo ao PDF
-    Object.keys(grouped).forEach(categoryId => {
-        const group = grouped[categoryId];
-        
-        // Adicionar título da categoria
+
+        const margin = 10;
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const maxWidth = pageWidth - 2 * margin;
+        let yStart = 20;
+        const checkboxSize = 3;
+
+        // Cabeçalho
+        doc.setFont('helvetica', 'bold');
         doc.setFontSize(14);
-        doc.setTextColor(50, 50, 50);
-        doc.text(group.category.name, 14, yPosition);
-        yPosition += 8;
-        
-        // Adicionar itens
-        doc.setFontSize(12);
-        group.items.forEach(item => {
-            const isCustom = state.customItems.some(ci => ci.id === item.id);
-            
-            if (isCustom) {
-                doc.setTextColor(150, 150, 0); // Cor diferente para itens personalizados
-            } else {
-                doc.setTextColor(0, 0, 0);
-            }
-            
-            doc.text(`• ${item.name} (x${item.quantity})`, 20, yPosition);
-            yPosition += 7;
-            
-            // Verificar se precisa de nova página
-            if (yPosition > 280) {
-                doc.addPage();
-                yPosition = 20;
+        doc.text('LISTA DE COMPRAS', pageWidth / 2, 12, { align: 'center' });
+
+        const date = new Date();
+        const dateStr = date.toLocaleDateString('pt-BR');
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Data: ${dateStr}`, pageWidth / 2, 17, { align: 'center' });
+
+        // Verifica itens
+        const hasItems = Object.values(state.selectedItems).some(q => q > 0);
+        if (!hasItems) {
+            doc.text('Nenhum item selecionado na lista.', margin, yStart);
+            doc.save('lista_vazia.pdf');
+            return;
+        }
+
+        // Organiza itens por categoria
+        const categoriesWithItems = {};
+        const allItems = [...items, ...state.customItems];
+
+        allItems.forEach(item => {
+            if (state.selectedItems[item.id] > 0) {
+                const catId = item.categoryId || 'extra';
+                if (!categoriesWithItems[catId]) {
+                    categoriesWithItems[catId] = {
+                        category: categories.find(c => c.id === catId) || {
+                            id: 'extra',
+                            name: 'Itens Extras',
+                            color: '#9E9E9E'
+                        },
+                        items: []
+                    };
+                }
+                categoriesWithItems[catId].items.push({
+                    name: item.name,
+                    quantity: state.selectedItems[item.id],
+                    custom: item.id.toString().startsWith('custom') || item.id.toString().startsWith('extra')
+                });
             }
         });
-        
-        yPosition += 5; // Espaço entre categorias
-    });
-    
-    // Salvar o PDF
-    doc.save(`lista_de_compras_${dateStr.replace(/\//g, '-')}.pdf`);
+
+        const sortedCategories = Object.values(categoriesWithItems).sort((a, b) => {
+            if (a.category.id === 'extra') return 1;
+            if (b.category.id === 'extra') return -1;
+            return a.category.name.localeCompare(b.category.name);
+        });
+
+        const totalItems = sortedCategories.reduce((acc, group) => acc + group.items.length, 0);
+
+        // 🎯 Cálculo Inteligente de Colunas
+        let columnCount = 1;
+        if (totalItems <= 30) columnCount = 2;
+        else if (totalItems <= 60) columnCount = 3;
+        else if (totalItems <= 100) columnCount = 4;
+        else if (totalItems <= 140) columnCount = 5;
+        else columnCount = 6;
+
+        const columnGap = 5;
+        const columnWidth = (maxWidth - (columnGap * (columnCount - 1))) / columnCount;
+
+        // 🎯 Tamanho da Fonte Inteligente
+        let fontSize = 9;
+        if (columnCount >= 5) fontSize = 7;
+        if (columnCount >= 6) fontSize = 6.5;
+
+        const lineHeight = fontSize * 0.5 + 3.5;
+
+        // Inicialização de posição
+        let currentColumn = 0;
+        let columnX = margin;
+        let yPosition = yStart;
+
+        doc.setFontSize(fontSize);
+
+        for (const group of sortedCategories) {
+            const categoryName = (group.category.name || 'Sem Categoria').toUpperCase();
+            const categoryColor = hexToRgb(group.category.color) || [0, 0, 0];
+
+            // Cabeçalho da categoria
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(40);
+            doc.text(categoryName, columnX, yPosition);
+
+            // Linha abaixo do título
+            doc.setDrawColor(...categoryColor);
+            doc.line(columnX, yPosition + 1, columnX + columnWidth, yPosition + 1);
+
+            yPosition += lineHeight;
+
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(0);
+
+            for (const item of group.items) {
+                if (yPosition + lineHeight > pageHeight - 15) {
+                    currentColumn++;
+                    if (currentColumn >= columnCount) {
+                        currentColumn = 0;
+                        yPosition = yStart;
+                    } else {
+                        yPosition = yStart;
+                    }
+                    columnX = margin + currentColumn * (columnWidth + columnGap);
+                }
+
+                // Caixa de seleção
+                doc.setDrawColor(120);
+                doc.rect(columnX, yPosition - checkboxSize + 1.2, checkboxSize, checkboxSize, 'S');
+
+                // Texto do item
+                const maxTextWidth = columnWidth - checkboxSize - 2;
+                const itemText = ` ${truncateText(doc, `${item.name} (x${item.quantity})`, maxTextWidth)}`;
+
+                if (item.custom) {
+                    doc.setTextColor(120, 80, 0);
+                } else {
+                    doc.setTextColor(0);
+                }
+
+                doc.text(itemText, columnX + checkboxSize + 1.5, yPosition);
+                yPosition += lineHeight;
+            }
+
+            yPosition += 2;
+        }
+
+        // Rodapé
+        doc.setFontSize(6);
+        doc.setTextColor(100);
+        doc.text('Marque os itens comprados com um X nos quadrados', pageWidth / 2, pageHeight - 5, { align: 'center' });
+
+        // Salvar PDF
+        doc.save(`lista_compras_${dateStr.replace(/\//g, '-')}.pdf`);
+
+    } catch (error) {
+        console.error('Erro ao gerar PDF:', error);
+        alert('Erro ao gerar PDF: ' + error.message);
+    }
+}
+
+function truncateText(doc, text, maxWidth) {
+    const ellipsis = '...';
+    let truncated = text;
+
+    while (doc.getStringUnitWidth(truncated) * doc.internal.getFontSize() / doc.internal.scaleFactor > maxWidth) {
+        if (truncated.length <= 4) break;
+        truncated = truncated.substring(0, truncated.length - 1);
+    }
+
+    return truncated.length < text.length ? truncated + ellipsis : text;
+}
+
+function hexToRgb(hex) {
+    if (!hex || typeof hex !== 'string') return null;
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    return [r, g, b];
 }
