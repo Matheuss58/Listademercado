@@ -14,6 +14,7 @@ const items = [
   { id: 112, name: 'Limpa vidros', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
   { id: 113, name: 'Álcool', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
   { id: 114, name: 'Sabonete líquido', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
+  { id: 115, name: 'Sabão barra', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
 
   // Dispensa - ID 2
   { id: 201, name: 'Leite', categoryId: 2, categoryName: 'Dispensa' },

@@ -84,7 +84,8 @@ const items = [
     { id: 112, name: 'Limpa vidros', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
     { id: 113, name: 'Álcool', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
     { id: 114, name: 'Sabonete líquido', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
-
+    { id: 115, name: 'Sabão barra', categoryId: 1, categoryName: 'Limpeza (lavanderia)' },
+    
     // Dispensa - ID 2
     { id: 201, name: 'Leite', categoryId: 2, categoryName: 'Dispensa' },
     { id: 202, name: 'Refrigerante', categoryId: 2, categoryName: 'Dispensa' },
@@ -552,163 +553,100 @@ function generatePDF() {
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
         const maxWidth = pageWidth - 2 * margin;
-        let yStart = 20;
-        const checkboxSize = 3;
+        const checkboxSize = 4.5;
+        const lineHeight = 7.5;
 
-        // Cabeçalho
+        let yStart = 35;
+        let currentColumn = 0;
+        const columnGap = 8;
+
+        // 🔥 Cabeçalho
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(14);
-        doc.text('LISTA DE COMPRAS', pageWidth / 2, 12, { align: 'center' });
+        doc.setFontSize(18);
+        doc.text('LISTA DE COMPRAS', pageWidth / 2, 18, { align: 'center' });
 
         const date = new Date();
         const dateStr = date.toLocaleDateString('pt-BR');
-        doc.setFontSize(9);
+        doc.setFontSize(11);
         doc.setFont('helvetica', 'normal');
-        doc.text(`Data: ${dateStr}`, pageWidth / 2, 17, { align: 'center' });
+        doc.text(`Data: ${dateStr}`, pageWidth / 2, 25, { align: 'center' });
 
-        // Verifica itens
-        const hasItems = Object.values(state.selectedItems).some(q => q > 0);
-        if (!hasItems) {
+        // 🔎 Coletar e ordenar os itens na ordem das categorias
+        const categoriesOrder = categories.map(c => c.id);
+        const allItems = [...items, ...state.customItems];
+
+        const itemsOrdered = allItems
+            .filter(item => state.selectedItems[item.id] > 0)
+            .sort((a, b) => {
+                const aIndex = categoriesOrder.indexOf(a.categoryId);
+                const bIndex = categoriesOrder.indexOf(b.categoryId);
+                return (aIndex - bIndex) || a.name.localeCompare(b.name);
+            });
+
+        if (itemsOrdered.length === 0) {
             doc.text('Nenhum item selecionado na lista.', margin, yStart);
             doc.save('lista_vazia.pdf');
             return;
         }
 
-        // Organiza itens por categoria
-        const categoriesWithItems = {};
-        const allItems = [...items, ...state.customItems];
-
-        allItems.forEach(item => {
-            if (state.selectedItems[item.id] > 0) {
-                const catId = item.categoryId || 'extra';
-                if (!categoriesWithItems[catId]) {
-                    categoriesWithItems[catId] = {
-                        category: categories.find(c => c.id === catId) || {
-                            id: 'extra',
-                            name: 'Itens Extras',
-                            color: '#9E9E9E'
-                        },
-                        items: []
-                    };
-                }
-                categoriesWithItems[catId].items.push({
-                    name: item.name,
-                    quantity: state.selectedItems[item.id],
-                    custom: item.id.toString().startsWith('custom') || item.id.toString().startsWith('extra')
-                });
-            }
-        });
-
-        const sortedCategories = Object.values(categoriesWithItems).sort((a, b) => {
-            if (a.category.id === 'extra') return 1;
-            if (b.category.id === 'extra') return -1;
-            return a.category.name.localeCompare(b.category.name);
-        });
-
-        const totalItems = sortedCategories.reduce((acc, group) => acc + group.items.length, 0);
-
-        // 🎯 Cálculo Inteligente de Colunas
-        let columnCount = 1;
-        if (totalItems <= 30) columnCount = 2;
-        else if (totalItems <= 60) columnCount = 3;
-        else if (totalItems <= 100) columnCount = 4;
-        else if (totalItems <= 140) columnCount = 5;
-        else columnCount = 6;
-
-        const columnGap = 5;
+        // 🔢 Agora com 4 colunas fixas
+        const columnCount = 4;
         const columnWidth = (maxWidth - (columnGap * (columnCount - 1))) / columnCount;
 
-        // 🎯 Tamanho da Fonte Inteligente
-        let fontSize = 9;
-        if (columnCount >= 5) fontSize = 7;
-        if (columnCount >= 6) fontSize = 6.5;
-
-        const lineHeight = fontSize * 0.5 + 3.5;
-
-        // Inicialização de posição
-        let currentColumn = 0;
         let columnX = margin;
         let yPosition = yStart;
 
-        doc.setFontSize(fontSize);
+        doc.setFontSize(10.5);
 
-        for (const group of sortedCategories) {
-            const categoryName = (group.category.name || 'Sem Categoria').toUpperCase();
-            const categoryColor = hexToRgb(group.category.color) || [0, 0, 0];
-
-            // Cabeçalho da categoria
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(40);
-            doc.text(categoryName, columnX, yPosition);
-
-            // Linha abaixo do título
-            doc.setDrawColor(...categoryColor);
-            doc.line(columnX, yPosition + 1, columnX + columnWidth, yPosition + 1);
-
-            yPosition += lineHeight;
-
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(0);
-
-            for (const item of group.items) {
-                if (yPosition + lineHeight > pageHeight - 15) {
-                    currentColumn++;
-                    if (currentColumn >= columnCount) {
-                        currentColumn = 0;
-                        yPosition = yStart;
-                    } else {
-                        yPosition = yStart;
-                    }
-                    columnX = margin + currentColumn * (columnWidth + columnGap);
-                }
-
-                // Caixa de seleção
-                doc.setDrawColor(120);
-                doc.rect(columnX, yPosition - checkboxSize + 1.2, checkboxSize, checkboxSize, 'S');
-
-                // Texto do item
-                const maxTextWidth = columnWidth - checkboxSize - 2;
-                const itemText = ` ${truncateText(doc, `${item.name} (x${item.quantity})`, maxTextWidth)}`;
-
-                if (item.custom) {
-                    doc.setTextColor(120, 80, 0);
+        for (const item of itemsOrdered) {
+            if (yPosition + lineHeight > pageHeight - 15) {
+                currentColumn++;
+                if (currentColumn >= columnCount) {
+                    doc.addPage();
+                    currentColumn = 0;
+                    yPosition = yStart;
                 } else {
-                    doc.setTextColor(0);
+                    yPosition = yStart;
                 }
-
-                doc.text(itemText, columnX + checkboxSize + 1.5, yPosition);
-                yPosition += lineHeight;
+                columnX = margin + currentColumn * (columnWidth + columnGap);
             }
 
-            yPosition += 2;
+            // ✅ Desenhar checkbox
+            const checkboxY = yPosition - checkboxSize / 2 + 1.5;
+            doc.setDrawColor(80);
+            doc.rect(columnX, checkboxY, checkboxSize, checkboxSize, 'S');
+
+            // 🔤 Texto alinhado
+            const itemText = `${item.name} (x${state.selectedItems[item.id]})`;
+            const maxTextWidth = columnWidth - checkboxSize - 4;
+            const text = truncateText(doc, itemText, maxTextWidth);
+
+            if (item.id.toString().startsWith('custom') || item.id.toString().startsWith('extra')) {
+                doc.setTextColor(120, 80, 0);
+            } else {
+                doc.setTextColor(0);
+            }
+
+            // ✔️ Alinhamento vertical e horizontal ajustados
+            const textY = yPosition + (checkboxSize / 2) - 0.5;
+            doc.text(text, columnX + checkboxSize + 3, textY);
+
+            yPosition += lineHeight;
         }
 
-        // Rodapé
-        doc.setFontSize(6);
+        // 🔻 Rodapé
+        doc.setFontSize(8);
         doc.setTextColor(100);
-        doc.text('Marque os itens comprados com um X nos quadrados', pageWidth / 2, pageHeight - 5, { align: 'center' });
+        doc.text('Marque os itens comprados com um X nos quadrados', pageWidth / 2, pageHeight - 7, { align: 'center' });
 
-        // Salvar PDF
         doc.save(`lista_compras_${dateStr.replace(/\//g, '-')}.pdf`);
-
     } catch (error) {
         console.error('Erro ao gerar PDF:', error);
         alert('Erro ao gerar PDF: ' + error.message);
     }
 }
 
-function truncateText(doc, text, maxWidth) {
-    const ellipsis = '...';
-    let truncated = text;
-
-    while (doc.getStringUnitWidth(truncated) * doc.internal.getFontSize() / doc.internal.scaleFactor > maxWidth) {
-        if (truncated.length <= 4) break;
-        truncated = truncated.substring(0, truncated.length - 1);
-    }
-
-    return truncated.length < text.length ? truncated + ellipsis : text;
-}
-
+// 🔧 HEX para RGB
 function hexToRgb(hex) {
     if (!hex || typeof hex !== 'string') return null;
     hex = hex.replace('#', '');
@@ -717,4 +655,14 @@ function hexToRgb(hex) {
     const g = parseInt(hex.substring(2, 4), 16);
     const b = parseInt(hex.substring(4, 6), 16);
     return [r, g, b];
+}
+
+// 🔧 Truncar texto
+function truncateText(doc, text, maxWidth) {
+    const textWidth = doc.getTextWidth(text);
+    if (textWidth <= maxWidth) return text;
+    while (doc.getTextWidth(text + '...') > maxWidth && text.length > 0) {
+        text = text.slice(0, -1);
+    }
+    return text.trim() + '...';
 }
