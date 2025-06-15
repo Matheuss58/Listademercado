@@ -549,16 +549,14 @@ function generatePDF() {
             format: 'a4'
         });
 
+        // 📏 Configurações gerais
         const margin = 10;
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
         const maxWidth = pageWidth - 2 * margin;
-        const checkboxSize = 4.5;
-        const lineHeight = 7.5;
-
+        const columnGap = 8;
         let yStart = 35;
         let currentColumn = 0;
-        const columnGap = 8;
 
         // 🔥 Cabeçalho
         doc.setFont('helvetica', 'bold');
@@ -571,7 +569,7 @@ function generatePDF() {
         doc.setFont('helvetica', 'normal');
         doc.text(`Data: ${dateStr}`, pageWidth / 2, 25, { align: 'center' });
 
-        // 🔎 Coletar e ordenar os itens na ordem das categorias
+        // 🔍 Ordenar itens na ordem das categorias
         const categoriesOrder = categories.map(c => c.id);
         const allItems = [...items, ...state.customItems];
 
@@ -589,15 +587,41 @@ function generatePDF() {
             return;
         }
 
-        // 🔢 Agora com 4 colunas fixas
-        const columnCount = 4;
+        const totalItems = itemsOrdered.length;
+
+        // 🧠 🔢 Cálculo inteligente de colunas e tamanhos
+        let columnCount = 1;
+        let fontSize = 14;
+        let checkboxSize = 5.5;
+        let lineHeight = 10;
+
+        if (totalItems > 25) {
+            columnCount = 2;
+            fontSize = 12;
+            checkboxSize = 5;
+            lineHeight = 9;
+        }
+        if (totalItems > 50) {
+            columnCount = 3;
+            fontSize = 10.5;
+            checkboxSize = 4.5;
+            lineHeight = 8;
+        }
+        if (totalItems > 85) {
+            columnCount = 4;
+            fontSize = 9.5;
+            checkboxSize = 4;
+            lineHeight = 7.5;
+        }
+
         const columnWidth = (maxWidth - (columnGap * (columnCount - 1))) / columnCount;
 
         let columnX = margin;
         let yPosition = yStart;
 
-        doc.setFontSize(10.5);
+        doc.setFontSize(fontSize);
 
+        // 🖍️ Renderizar itens
         for (const item of itemsOrdered) {
             if (yPosition + lineHeight > pageHeight - 15) {
                 currentColumn++;
@@ -611,12 +635,12 @@ function generatePDF() {
                 columnX = margin + currentColumn * (columnWidth + columnGap);
             }
 
-            // ✅ Desenhar checkbox
+            // ✅ Checkbox
             const checkboxY = yPosition - checkboxSize / 2 + 1.5;
             doc.setDrawColor(80);
             doc.rect(columnX, checkboxY, checkboxSize, checkboxSize, 'S');
 
-            // 🔤 Texto alinhado
+            // ✍️ Texto alinhado
             const itemText = `${item.name} (x${state.selectedItems[item.id]})`;
             const maxTextWidth = columnWidth - checkboxSize - 4;
             const text = truncateText(doc, itemText, maxTextWidth);
@@ -627,7 +651,6 @@ function generatePDF() {
                 doc.setTextColor(0);
             }
 
-            // ✔️ Alinhamento vertical e horizontal ajustados
             const textY = yPosition + (checkboxSize / 2) - 0.5;
             doc.text(text, columnX + checkboxSize + 3, textY);
 
@@ -637,7 +660,8 @@ function generatePDF() {
         // 🔻 Rodapé
         doc.setFontSize(8);
         doc.setTextColor(100);
-        doc.text('Marque os itens comprados com um X nos quadrados', pageWidth / 2, pageHeight - 7, { align: 'center' });
+        doc.text('Marque os itens comprados com um X nos quadrados',
+            pageWidth / 2, pageHeight - 7, { align: 'center' });
 
         doc.save(`lista_compras_${dateStr.replace(/\//g, '-')}.pdf`);
     } catch (error) {
@@ -646,7 +670,8 @@ function generatePDF() {
     }
 }
 
-// 🔧 HEX para RGB
+
+// 🔧 Função HEX para RGB (opcional, mas útil se quiser colorir futuramente)
 function hexToRgb(hex) {
     if (!hex || typeof hex !== 'string') return null;
     hex = hex.replace('#', '');
@@ -657,7 +682,8 @@ function hexToRgb(hex) {
     return [r, g, b];
 }
 
-// 🔧 Truncar texto
+
+// 🔧 Truncar texto que ultrapassa a largura da coluna
 function truncateText(doc, text, maxWidth) {
     const textWidth = doc.getTextWidth(text);
     if (textWidth <= maxWidth) return text;
