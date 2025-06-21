@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lista-compras-cache-v1';
+const CACHE_NAME = 'lista-compras-cache-v2';
 
 // Arquivos estáticos essenciais do seu app da lista de compras
 const FILES_TO_CACHE = [
