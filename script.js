@@ -694,7 +694,7 @@ function truncateText(doc, text, maxWidth) {
 }
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js')
+  navigator.serviceWorker.register('./service-worker.js')
     .then(() => console.log('Service Worker registrado com sucesso!'))
     .catch(err => console.error('Falha no registro do Service Worker:', err));
 }
