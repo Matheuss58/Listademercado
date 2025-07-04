@@ -60,6 +60,7 @@ const items = [
   { id: 419, name: 'Farofa', categoryId: 4, categoryName: 'Armário baixo' },
   { id: 420, name: 'Batata Palha', categoryId: 4, categoryName: 'Armário baixo' },
   { id: 421, name: 'Filtro de café', categoryId: 4, categoryName: 'Armário baixo' },
+  { id: 422, name: 'Fermento', categoryId: 4, categoryName: 'Armário baixo' },
 
   // Congelador - ID 5
   { id: 501, name: 'Carne', categoryId: 5, categoryName: 'Congelador' },
