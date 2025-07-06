@@ -107,6 +107,7 @@ const items = [
     { id: 313, name: 'Páprica doce', categoryId: 3, categoryName: 'Armário alto' },
     { id: 314, name: 'Chimichurri', categoryId: 3, categoryName: 'Armário alto' },
     { id: 315, name: 'Palito de dente', categoryId: 3, categoryName: 'Armário alto' },
+    { id: 316, name: 'Papel toalha', categoryId: 3, categoryName: 'Armário alto' },
 
     // Armário baixo - ID 4
     { id: 401, name: 'Miojo', categoryId: 4, categoryName: 'Armário baixo' },
