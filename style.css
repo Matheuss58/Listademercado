@@ -277,3 +277,20 @@ h1, h2 {
         font-size: 1.5em;
     }
 }
+
+/* Estilos para a lista alfabética */
+.letter-section {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.letter-title {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #4CAF50;
+    color: #4CAF50;
+}

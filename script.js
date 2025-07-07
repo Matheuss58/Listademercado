@@ -463,46 +463,42 @@ function finalizeList() {
 function renderFinalList() {
     elements.finalListContainer.innerHTML = '';
     
-    const grouped = {};
+    // Obter todos os itens selecionados
+    const selectedItems = [];
     
     Object.keys(state.selectedItems)
         .filter(id => state.selectedItems[id] > 0)
         .forEach(id => {
             const item = [...items, ...state.customItems].find(i => i.id.toString() === id);
-            if (!item) return;
-            
-            const categoryId = item.categoryId || 'extra';
-            
-            if (!grouped[categoryId]) {
-                grouped[categoryId] = {
-                    category: categories.find(c => c.id === item.categoryId) || { 
-                        id: 'extra', 
-                        name: 'Itens Extras', 
-                        color: '#9E9E9E' 
-                    },
-                    items: []
-                };
+            if (item) {
+                selectedItems.push({
+                    ...item,
+                    quantity: state.selectedItems[id]
+                });
             }
-            grouped[categoryId].items.push({
-                ...item,
-                quantity: state.selectedItems[id]
-            });
         });
     
-    const sortedCategories = Object.keys(grouped).sort((a, b) => {
-        if (a === 'extra') return 1;
-        if (b === 'extra') return -1;
-        return 0;
+    // Ordenar os itens alfabeticamente
+    selectedItems.sort((a, b) => a.name.localeCompare(b.name));
+    
+    // Agrupar por primeira letra
+    const groupedByLetter = {};
+    
+    selectedItems.forEach(item => {
+        const firstLetter = item.name.charAt(0).toUpperCase();
+        if (!groupedByLetter[firstLetter]) {
+            groupedByLetter[firstLetter] = [];
+        }
+        groupedByLetter[firstLetter].push(item);
     });
     
-    sortedCategories.forEach(categoryId => {
-        const group = grouped[categoryId];
+    // Criar seções para cada letra
+    Object.keys(groupedByLetter).sort().forEach(letter => {
         const section = document.createElement('div');
-        section.className = 'category-section';
-        section.style.setProperty('--category-color', group.category.color);
+        section.className = 'letter-section';
         
         let itemsHTML = '';
-        group.items.forEach(item => {
+        groupedByLetter[letter].forEach(item => {
             const isCustom = state.customItems.some(ci => ci.id === item.id);
             itemsHTML += `
                 <div class="item-row ${isCustom ? 'custom-item' : ''}">
@@ -513,7 +509,7 @@ function renderFinalList() {
         });
         
         section.innerHTML = `
-            <div class="category-title">${group.category.name}</div>
+            <div class="letter-title">${letter}</div>
             ${itemsHTML}
         `;
         
@@ -551,7 +547,7 @@ function generatePDF() {
             format: 'a4'
         });
 
-        // 📏 Configurações gerais
+        // Configurações gerais
         const margin = 10;
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
@@ -560,7 +556,7 @@ function generatePDF() {
         let yStart = 35;
         let currentColumn = 0;
 
-        // 🔥 Cabeçalho
+        // Cabeçalho
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(18);
         doc.text('LISTA DE COMPRAS', pageWidth / 2, 18, { align: 'center' });
@@ -571,27 +567,21 @@ function generatePDF() {
         doc.setFont('helvetica', 'normal');
         doc.text(`Data: ${dateStr}`, pageWidth / 2, 25, { align: 'center' });
 
-        // 🔍 Ordenar itens na ordem das categorias
-        const categoriesOrder = categories.map(c => c.id);
+        // Obter todos os itens selecionados e ordenar alfabeticamente
         const allItems = [...items, ...state.customItems];
-
-        const itemsOrdered = allItems
+        const selectedItems = allItems
             .filter(item => state.selectedItems[item.id] > 0)
-            .sort((a, b) => {
-                const aIndex = categoriesOrder.indexOf(a.categoryId);
-                const bIndex = categoriesOrder.indexOf(b.categoryId);
-                return (aIndex - bIndex) || a.name.localeCompare(b.name);
-            });
+            .sort((a, b) => a.name.localeCompare(b.name));
 
-        if (itemsOrdered.length === 0) {
+        if (selectedItems.length === 0) {
             doc.text('Nenhum item selecionado na lista.', margin, yStart);
             doc.save('lista_vazia.pdf');
             return;
         }
 
-        const totalItems = itemsOrdered.length;
+        const totalItems = selectedItems.length;
 
-        // 🧠 🔢 Cálculo inteligente de colunas e tamanhos
+        // Cálculo de colunas e tamanhos
         let columnCount = 1;
         let fontSize = 14;
         let checkboxSize = 5.5;
@@ -623,8 +613,8 @@ function generatePDF() {
 
         doc.setFontSize(fontSize);
 
-        // 🖍️ Renderizar itens
-        for (const item of itemsOrdered) {
+        // Renderizar itens
+        for (const item of selectedItems) {
             if (yPosition + lineHeight > pageHeight - 15) {
                 currentColumn++;
                 if (currentColumn >= columnCount) {
@@ -637,12 +627,12 @@ function generatePDF() {
                 columnX = margin + currentColumn * (columnWidth + columnGap);
             }
 
-            // ✅ Checkbox
+            // Checkbox
             const checkboxY = yPosition - checkboxSize / 2 + 1.5;
             doc.setDrawColor(80);
             doc.rect(columnX, checkboxY, checkboxSize, checkboxSize, 'S');
 
-            // ✍️ Texto alinhado
+            // Texto
             const itemText = `${item.name} (x${state.selectedItems[item.id]})`;
             const maxTextWidth = columnWidth - checkboxSize - 4;
             const text = truncateText(doc, itemText, maxTextWidth);
@@ -659,7 +649,7 @@ function generatePDF() {
             yPosition += lineHeight;
         }
 
-        // 🔻 Rodapé
+        // Rodapé
         doc.setFontSize(8);
         doc.setTextColor(100);
         doc.text('Marque os itens comprados com um X nos quadrados',
